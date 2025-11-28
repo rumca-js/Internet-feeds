@@ -1,6 +1,6 @@
 import argparse
 
-from linkarchivetools.db2feeds import Db2Feeds
+from linkarchivetools import Db2Feeds, DbFilter
 
 
 def parse():
@@ -19,8 +19,13 @@ def main():
         print("Please specify database")
         return
 
-    analyzer = Db2Feeds(input_db = args.db, output_db=args.output_db)
-    analyzer.process()
+    tmp_db = "tmp.db"
+
+    filter = DbFilter(input_db = args.db, output_db = tmp_db)
+    filter.filter_votes()
+
+    analyzer = Db2Feeds(input_db = tmp_db, output_db=args.output_db)
+    analyzer.convert()
 
 
 main()
