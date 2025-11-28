@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "Internet-feeds"
+version = "0.0.1"
+description = ""
+authors = ["X Y Z <rozbujnik@gmail.com>"]
+readme = "README.md"
+packages = [{include = "static_lists"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+#sqlalchemy = "*"
+linkarchivetools="0.0.15"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
