@@ -19,3 +19,7 @@ unpack feeds.zip
 python3 -m http.server 8000          # start server
 https://localhost:8000/search.html   # visit
 ```
+
+# Plans
+
+Currently only some feeds are captured from Internet-Places-Database project. I plan on visiting every link with vote > 0, check if it contains any feed, and add it to the database.
