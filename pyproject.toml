@@ -9,7 +9,7 @@ packages = [{include = "static_lists"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 #sqlalchemy = "*"
-linkarchivetools="0.0.16"
+linkarchivetools="0.0.25"
 
 [build-system]
 requires = ["poetry-core"]

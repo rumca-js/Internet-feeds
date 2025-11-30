@@ -27,6 +27,9 @@ unpack-split:
 	7z x $(ARCHIVE_NAME)
 	rm -f $(ARCHIVE_NAME)
 
+filter:
+	poetry run python dbfeeds.py
+
 # Clean rule to remove the archive
 clean:
 	rm -f $(ARCHIVE_NAME) extracted.zip
