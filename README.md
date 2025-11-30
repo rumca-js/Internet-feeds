@@ -4,6 +4,12 @@ This is a database of Internet feeds. Just unzip <b>feeds.zip</b>!
 
 Captured from repository of links. For example [https://github.com/rumca-js/Internet-Places-Database](https://github.com/rumca-js/Internet-Places-Database)
 
+# Data
+
+```
+Table: linkdatamodel, Row count: 2645
+```
+
 ## Access via web interface
 
 ```
