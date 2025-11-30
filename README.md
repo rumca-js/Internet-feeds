@@ -2,7 +2,9 @@
 
 This is a database of Internet feeds. Just unzip <b>feeds.zip</b>!
 
-Captured from repository of links. For example [https://github.com/rumca-js/Internet-Places-Database](https://github.com/rumca-js/Internet-Places-Database)
+The archive contains a SQLite database, generated from various curated link collections (e.g. the [https://github.com/rumca-js/Internet-Places-Database](https://github.com/rumca-js/Internet-Places-Database) project).
+
+You can open the database with any SQLite tool.
 
 # Data
 
