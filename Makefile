@@ -64,3 +64,8 @@ remove-history2:
 	# push to the github remote repos ensuring you overwrite history
 	git remote add origin https://github.com/rumca-js/Internet-Places-Database.git
 	git push -u --force origin main
+
+download-data:
+	wget https://github.com/plenaryapp/awesome-rss-feeds/archive/refs/heads/master.zip
+	7z x master.zip
+	rm master.zip
