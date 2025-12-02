@@ -69,7 +69,8 @@ def process_feeds(feeds, executor, futures, table):
         if type(url.get_response().get_page()) is RssPage:
             print(f"{feed}:OK")
             properties = get_feed_properties(feed, url)
-            new_entry_id = table.insert_json_data("linkdatamodel", properties)
+            if "link" in properties and properties["link"]:
+                new_entry_id = table.insert_json_data("linkdatamodel", properties)
         else:
             print(f"{feed}:NOK")
 
@@ -151,17 +152,23 @@ def main():
 
     tmp_db = "tmp.db"
 
+    print(f"Filtering {args.db} entries")
+
     filter = DbFilter(input_db = args.db, output_db = tmp_db)
     filter.filter_votes()
+
+    print(f"{args.db} places -> feeds")
 
     analyzer = Db2Feeds(input_db = tmp_db, output_db=args.output_db)
     analyzer.convert()
 
-    awesome_path = Path("awesome-rss-feeds-master")
-    if awesome_path.exists():
-        process_all_opml_files(args, "awesome-rss-feeds-master")
+    #awesome_path = Path("awesome-rss-feeds-master")
+    #if awesome_path.exists():
+    #    print("Reading awesome rss feeds")
+    #    process_all_opml_files(args, "awesome-rss-feeds-master")
 
-    try_adding_source_feeds(args.output_db)
+    #print("Reading rumca-js feeds")
+    #try_adding_source_feeds(args.output_db)
 
 
 main()

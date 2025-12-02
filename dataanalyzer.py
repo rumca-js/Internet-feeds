@@ -45,21 +45,11 @@ class Parser(object):
         self.parser.add_argument("--columns", action="store_true", help="displays summary of tables column nmaes")
 
         self.parser.add_argument("-i", "--ignore-case", action="store_true", help="Ignores case")
-        self.parser.add_argument("-v", "--verbosity", help="Verbosity level")
+        self.parser.add_argument("-v", "--verbosity", type=int, default=1, help="Verbosity level")
         
         self.args = self.parser.parse_args()
 
         return True
-
-    def get_verbosity_level(self):
-        level = 1
-        if self.args.verbosity:
-            try:
-                level = int(self.args.verbosity)
-            except Exception as E:
-                print(str(E))
-
-        return level
 
 
 def main():
