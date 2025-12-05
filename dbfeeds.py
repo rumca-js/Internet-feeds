@@ -174,24 +174,24 @@ def main():
 
     tmp_db = "tmp.db"
 
-    print(f"Filtering {args.db} entries")
+    #print(f"Filtering {args.db} entries")
 
-    filter = DbFilter(input_db = args.db, output_db = tmp_db)
-    filter.filter_votes()
+    #filter = DbFilter(input_db = args.db, output_db = tmp_db)
+    #filter.filter_votes()
 
-    print(f"{args.db} places -> feeds")
+    #print(f"{args.db} places -> feeds")
 
-    analyzer = Db2Feeds(input_db = tmp_db, output_db=args.output_db)
-    analyzer.convert()
+    #analyzer = Db2Feeds(input_db = tmp_db, output_db=args.output_db)
+    #analyzer.convert()
 
-    #awesome_path = Path("awesome-rss-feeds-master")
-    #if awesome_path.exists():
-    #    print("Reading awesome rss feeds")
-    #    process_all_opml_files(args, "awesome-rss-feeds-master")
+    awesome_path = Path("awesome-rss-feeds-master")
+    if awesome_path.exists():
+        print("Reading awesome rss feeds")
+        process_all_opml_files(args, "awesome-rss-feeds-master")
 
 
-    #print("Reading rumca-js feeds")
-    #try_adding_source_feeds(args.output_db)
+    print("Reading rumca-js feeds")
+    try_adding_source_feeds(args.output_db)
 
 
 main()
