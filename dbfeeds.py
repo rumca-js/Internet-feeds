@@ -61,6 +61,11 @@ def get_feed_properties(feed, url):
 def process_feeds(feeds, executor, futures, table):
     #print("Processing file {}".format(afile))
     for feed in feeds:
+        url = BaseUrl(url=feed)
+        new_feeds = url.get_feeds()
+        if len(new_feeds) > 0:
+            feed = new_feeds[0]
+
         if not table.is_entry_link(feed):
             futures.append(executor.submit(fetch_feed, feed))
 
@@ -100,7 +105,7 @@ def process_opmls(db_name, all_feeds):
             process_feeds(all_feeds, executor, futures, table)
 
 
-def read_json():
+def read_link_database_sources():
     feeds = set()
 
     url = BaseUrl("https://raw.githubusercontent.com/rumca-js/RSS-Link-Database-2025/refs/heads/main/sources.json")
@@ -114,6 +119,21 @@ def read_json():
     return feeds
 
 
+def read_infobubble_sources():
+    feeds = set()
+
+    url = BaseUrl("https://raw.githubusercontent.com/wokenlex/infobubble-support/refs/heads/main/Sources/all.sources.rss.yaml")
+    response = url.get_response()
+    text = response.get_text()
+    loaded = json.loads(text)
+
+    for item in loaded:
+        feeds.add(item["url"])
+
+    return feeds
+
+
+
 def try_adding_source_feeds(db_name):
     engine = create_engine(f"sqlite:///{db_name}")
     with engine.connect() as connection:
@@ -122,7 +142,9 @@ def try_adding_source_feeds(db_name):
         with ThreadPoolExecutor(max_workers=5) as executor:  # run 5 at a time
             futures = []
 
-            all_feeds = read_json()
+            all_feeds = read_link_database_sources()
+            # other = read_infobubble_sources()
+
             process_feeds(all_feeds, executor, futures, table)
 
 
@@ -166,6 +188,7 @@ def main():
     #if awesome_path.exists():
     #    print("Reading awesome rss feeds")
     #    process_all_opml_files(args, "awesome-rss-feeds-master")
+
 
     #print("Reading rumca-js feeds")
     #try_adding_source_feeds(args.output_db)
