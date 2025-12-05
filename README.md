@@ -12,7 +12,7 @@ You can open the database with any SQLite tool.
 Table: linkdatamodel, Row count: 3376
 ```
 
-How can you page, or RSS feed enter this database? Well...
+How can your page, or RSS feed enter this database? Well...
 
  - first it needs to be on the internet. Available, scrapable (title and stuff needs to be there)
  - it needs to wait, until it is picked up by scrapers
