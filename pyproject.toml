@@ -9,6 +9,7 @@ packages = [{include = "static_lists"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 linkarchivetools="0.0.34"
+webtoolkitex="0.0.1"
 
 [build-system]
 requires = ["poetry-core"]

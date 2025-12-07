@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from linkarchivetools import Db2Feeds, DbFilter
 from linkarchivetools.utils.reflected import ReflectedEntryTable
 from webtoolkit import OpmlPage, BaseUrl, RssPage
+from webtoolkitex import UrlEx
 
 
 def list_files_recursive(root_dir):
@@ -26,7 +27,7 @@ def fetch_feed(feed):
     """
     Fetch a feed
     """
-    url = BaseUrl(feed)
+    url = UrlEx(feed)
     response = url.get_response()
     return feed, url
 
@@ -64,7 +65,7 @@ def process_feeds_executor(feeds, executor, futures, table):
     for feed in feeds:
         print("{} Fetching...".format(feed))
 
-        url = BaseUrl(url=feed)
+        url = UrlEx(url=feed)
         new_feeds = url.get_feeds()
         if len(new_feeds) > 0:
             feed = new_feeds[0]
@@ -138,7 +139,7 @@ def read_link_database_sources():
     """
     feeds = set()
 
-    url = BaseUrl("https://raw.githubusercontent.com/rumca-js/RSS-Link-Database-2025/refs/heads/main/sources.json")
+    url = UrlEx("https://raw.githubusercontent.com/rumca-js/RSS-Link-Database-2025/refs/heads/main/sources.json")
     response = url.get_response()
     text = response.get_text()
     loaded = json.loads(text)
@@ -155,7 +156,7 @@ def read_infobubble_sources():
     """
     feeds = set()
 
-    url = BaseUrl("https://raw.githubusercontent.com/wokenlex/infobubble-support/refs/heads/main/Sources/all.sources.rss.yaml")
+    url = UrlEx("https://raw.githubusercontent.com/wokenlex/infobubble-support/refs/heads/main/Sources/all.sources.rss.yaml")
     response = url.get_response()
     text = response.get_text()
     loaded = json.loads(text)
