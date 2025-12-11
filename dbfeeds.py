@@ -44,6 +44,7 @@ def get_feed_properties(feed, url):
     result["description"] = url.get_description()
     result["status_code"] = url.get_status_code()
     result["manual_status_code"] = 0
+    result["thumbnail"] = url.get_thumbnail()
 
     # not null requirement
     result["source_url"] = ""
