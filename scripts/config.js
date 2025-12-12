@@ -5,8 +5,8 @@ let system_initialized = false;
 
 let view_display_type = "search-engine";
 let view_display_style = "style-light";
-let view_show_icons = false;
-let view_small_icons = false;
+let view_show_icons = true;
+let view_small_icons = true;
 let user_age = 1;
 let debug_mode = false;
 

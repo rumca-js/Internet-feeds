@@ -9,6 +9,7 @@ from linkarchivetools import Db2Feeds, DbFilter
 from linkarchivetools.utils.reflected import ReflectedEntryTable
 from webtoolkit import OpmlPage, BaseUrl, RssPage
 from webtoolkitex import UrlEx
+import webtoolkitex
 
 
 def list_files_recursive(root_dir):
@@ -27,7 +28,9 @@ def fetch_feed(feed):
     """
     Fetch a feed
     """
-    url = UrlEx(feed)
+    request = webtoolkitex.webconfig.WebConfig.get_default_request(feed)
+    request.timeout_s = 70
+    url = UrlEx(url=feed, request=request)
     response = url.get_response()
     return feed, url
 
@@ -74,15 +77,24 @@ def process_feeds_executor(feeds, executor, futures, table):
         if not table.is_entry_link(feed):
             futures.append(executor.submit(fetch_feed, feed))
 
+    total = len(futures)
+    completed = 0
+
     for future in as_completed(futures):
+        completed += 1
+        remaining = total - completed
+
         feed, url = future.result()
+
+        text = f"[{completed}/{total}] {feed}:"
+
         if type(url.get_response().get_page()) is RssPage:
-            print(f"{feed}:OK")
+            print(text + "OK")
             properties = get_feed_properties(feed, url)
             if "link" in properties and properties["link"]:
                 new_entry_id = table.insert_json_data("linkdatamodel", properties)
         else:
-            print(f"{feed}:NOK")
+            print(text + "NOK")
 
 
 def find_opml_files(root_directory):
@@ -184,7 +196,7 @@ def main():
         print("Please specify database")
         return
 
-    # tmp_db = "tmp.db"
+    tmp_db = "tmp.db"
 
     print(f"Filtering {args.db} entries")
 
@@ -202,7 +214,6 @@ def main():
     if awesome_path.exists():
         print("Reading awesome RSS feeds")
         all_feeds.extend(get_all_opml_feeds(args, "awesome-rss-feeds-master"))
-
 
     print("Reading rumca-js feeds")
     all_feeds.extend(read_link_database_sources())
