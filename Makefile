@@ -6,7 +6,7 @@ SOURCE_FILE = feeds.db
 .PHONY: zip unzip clean server pack-split unpack-split example-search
 
 # Rule to create a zip archive split into 50MB parts
-zip:
+zip: filter
 	zip -s 50m $(ARCHIVE_NAME) $(SOURCE_FILE)
 	echo "Packed $(SOURCE_FILE) into $(ARCHIVE_NAME)"
 	rm -f $(SOURCE_FILE)
