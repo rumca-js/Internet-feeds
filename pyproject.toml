@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Internet-feeds"
-version = "0.0.2"
+version = "0.0.3"
 description = ""
 authors = ["X Y Z <rozbujnik@gmail.com>"]
 readme = "README.md"
@@ -8,8 +8,8 @@ packages = [{include = "static_lists"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-linkarchivetools="0.0.40"
-webtoolkitex="0.0.7"
+linkarchivetools="0.0.43"
+webtoolkitex="0.0.19"
 
 [build-system]
 requires = ["poetry-core"]
