@@ -7,7 +7,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from linkarchivetools import Db2Feeds, DbFilter
 from linkarchivetools.utils.reflected import ReflectedEntryTable
-from webtoolkit import OpmlPage, BaseUrl, RssPage
+from webtoolkit import (
+   OpmlPage,
+   BaseUrl,
+   RssPage,
+   ContentLinkParser,
+)
 from webtoolkitex import UrlEx
 import webtoolkitex
 
@@ -152,7 +157,7 @@ def read_link_database_sources():
     """
     feeds = set()
 
-    url = UrlEx("https://raw.githubusercontent.com/rumca-js/RSS-Link-Database-2025/refs/heads/main/sources.json")
+    url = UrlEx("https://raw.githubusercontent.com/rumca-js/RSS-Link-Database/refs/heads/main/sources.json")
     response = url.get_response()
     text = response.get_text()
     loaded = json.loads(text)
@@ -172,10 +177,12 @@ def read_infobubble_sources():
     url = UrlEx("https://raw.githubusercontent.com/wokenlex/infobubble-support/refs/heads/main/Sources/all.sources.rss.yaml")
     response = url.get_response()
     text = response.get_text()
-    loaded = json.loads(text)
 
-    for item in loaded:
-        feeds.add(item["url"])
+    parser = ContentLinkParser(url="https://raw.githubusercontent.com/wokenlex/infobubble-support/refs/heads/main/Sources/all.sources.rss.yaml", contents=text)
+    links = parser.get_links()
+
+    for link in links:
+        feeds.add(link)
 
     return feeds
 
@@ -183,7 +190,8 @@ def read_infobubble_sources():
 def parse():
     parser = argparse.ArgumentParser(description="Data analyzer program")
     parser.add_argument("--db", default="places.db", help="DB to be scanned")
-    parser.add_argument("--output-db", default="feeds.db", help="DB to be scanned")
+    parser.add_argument("--output-db", default="feeds.db", help="DB to be produced")
+    parser.add_argument("--remote-server", help="DB to be scanned")
 
     args = parser.parse_args()
 
@@ -205,18 +213,20 @@ def main():
 
     print(f"{args.db} places -> feeds")
 
-    analyzer = Db2Feeds(input_db = tmp_db, output_db=args.output_db)
-    analyzer.convert()
+    converter = Db2Feeds(input_db = tmp_db, output_db=args.output_db, read_internet_links=True, remote_server=args.remote_server)
+    converter.convert()
 
-    all_feeds = []
+    all_feeds = set()
 
     awesome_path = Path("awesome-rss-feeds-master")
     if awesome_path.exists():
         print("Reading awesome RSS feeds")
-        all_feeds.extend(get_all_opml_feeds(args, "awesome-rss-feeds-master"))
+        all_feeds.update(get_all_opml_feeds(args, "awesome-rss-feeds-master"))
 
     print("Reading rumca-js feeds")
-    all_feeds.extend(read_link_database_sources())
+    all_feeds.update(read_link_database_sources())
+    print("Reading infobuble feeds")
+    all_feeds.update(read_infobubble_sources())
 
     print("I have {} feeds".format(len(all_feeds)))
     print("Processing feeds")
