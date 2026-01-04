@@ -46,13 +46,7 @@ def get_feed_properties(feed, url):
     """
     result = {}
     properties = url.get_properties()
-
-    result["link"] = feed
-    result["title"] = url.get_title()
-    result["description"] = url.get_description()
-    result["status_code"] = url.get_status_code()
-    result["manual_status_code"] = 0
-    result["thumbnail"] = url.get_thumbnail()
+    response = url.get_response()
 
     # not null requirement
     result["source_url"] = ""
@@ -63,6 +57,18 @@ def get_feed_properties(feed, url):
     result["page_rating_visits"] = 0
     result["page_rating_votes"] = 0
     result["page_rating"] = 0
+
+    result["link"] = feed
+    result["title"] = url.get_title()
+    result["description"] = url.get_description()
+    result["thumbnail"] = url.get_thumbnail()
+    result["language"] = url.get_language()
+    result["author"] = url.get_author()
+    result["status_code"] = url.get_status_code()
+
+    result["manual_status_code"] = 0
+    if "page_rating_contents" in properties:
+        result["page_rating_contents"] = properties["page_rating_contents"]
 
     return result
 
