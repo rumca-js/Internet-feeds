@@ -78,15 +78,7 @@ def process_feeds_executor(feeds, executor, futures, table):
     Process all feeds
     """
     for feed in feeds:
-        print("{} Fetching...".format(feed))
-
-        url = UrlEx(url=feed)
-        new_feeds = url.get_feeds()
-        if len(new_feeds) > 0:
-            feed = new_feeds[0]
-
-        if not table.is_entry_link(feed):
-            futures.append(executor.submit(fetch_feed, feed))
+        futures.append(executor.submit(fetch_feed, feed))
 
     total = len(futures)
     completed = 0
@@ -146,15 +138,31 @@ def get_opml_feeds(all_files):
     return result
 
 
+def filter_feeds(table, all_feeds):
+    result = set()
+
+    for feed in all_feeds:
+        url = UrlEx(url=feed)
+        new_feeds = url.get_feeds()
+        if len(new_feeds) > 0:
+            feed = new_feeds[0]
+
+        if not table.is_entry_link(feed):
+            result.add(feed)
+    return result
+
+
 def process_feeds(db_name, all_feeds):
     engine = create_engine(f"sqlite:///{db_name}")
     with engine.connect() as connection:
         table = ReflectedEntryTable(engine, connection)
 
+        used_feeds = filter_feeds(table, all_feeds)
+
         with ThreadPoolExecutor(max_workers=5) as executor:  # run 5 at a time
             futures = []
 
-            process_feeds_executor(all_feeds, executor, futures, table)
+            process_feeds_executor(used_feeds, executor, futures, table)
 
 
 def read_link_database_sources():
