@@ -72,34 +72,6 @@ def get_feed_properties(feed, url):
 
     return result
 
-
-def process_feeds_executor(feeds, executor, futures, table):
-    """
-    Process all feeds
-    """
-    for feed in feeds:
-        futures.append(executor.submit(fetch_feed, feed))
-
-    total = len(futures)
-    completed = 0
-
-    for future in as_completed(futures):
-        completed += 1
-        remaining = total - completed
-
-        feed, url = future.result()
-
-        text = f"[{completed}/{total}] {feed}:"
-
-        if type(url.get_response().get_page()) is RssPage:
-            print(text + "OK")
-            properties = get_feed_properties(feed, url)
-            if "link" in properties and properties["link"]:
-                new_entry_id = table.insert_json_data("linkdatamodel", properties)
-        else:
-            print(text + "NOK")
-
-
 def find_opml_files(root_directory):
     """
     Returns list of OPML files from directory
@@ -142,6 +114,7 @@ def filter_feeds(table, all_feeds):
     result = set()
 
     for feed in all_feeds:
+        print(f"Checking {feed}")
         url = UrlEx(url=feed)
         new_feeds = url.get_feeds()
         if len(new_feeds) > 0:
@@ -153,16 +126,55 @@ def filter_feeds(table, all_feeds):
 
 
 def process_feeds(db_name, all_feeds):
+    print("Filtering feeds")
     engine = create_engine(f"sqlite:///{db_name}")
     with engine.connect() as connection:
         table = ReflectedEntryTable(engine, connection)
-
         used_feeds = filter_feeds(table, all_feeds)
 
-        with ThreadPoolExecutor(max_workers=5) as executor:  # run 5 at a time
-            futures = []
+    used_feeds = list(used_feeds)
 
-            process_feeds_executor(used_feeds, executor, futures, table)
+    print("Fetching")
+    batch_size = 100
+    total_size = len(used_feeds)
+    for loop_base in range(0, total_size, batch_size):
+       print(f"New loop {loop_base}")
+       engine = create_engine(f"sqlite:///{db_name}")
+       with engine.connect() as connection:
+          table = ReflectedEntryTable(engine, connection)
+
+          batch_feeds = used_feeds[loop_base:loop_base + batch_size]
+
+          with ThreadPoolExecutor(max_workers=5) as executor:  # run 5 at a time
+             futures = []
+             process_feeds_executor(batch_feeds, executor, futures, table, total_size, batch_size, loop_base)
+
+
+def process_feeds_executor(feeds, executor, futures, table, total_size, batch_size, loop_base):
+    """
+    Process all feeds
+    """
+    for feed in feeds:
+        futures.append(executor.submit(fetch_feed, feed))
+
+    total = total_size
+    completed = loop_base
+
+    for future in as_completed(futures):
+        completed += 1
+        remaining = total - completed
+
+        feed, url = future.result()
+
+        text = f"[{completed}/{total}] {feed}:"
+
+        if type(url.get_response().get_page()) is RssPage:
+            print(text + "OK")
+            properties = get_feed_properties(feed, url)
+            if "link" in properties and properties["link"]:
+                new_entry_id = table.insert_json_data("linkdatamodel", properties)
+        else:
+            print(text + "NOK")
 
 
 def read_link_database_sources():
