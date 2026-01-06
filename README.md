@@ -9,7 +9,7 @@ You can open the database with any SQLite tool.
 # Data
 
 ```
-Table: linkdatamodel, Row count: 4091
+Table: linkdatamodel, Row count: 54615
 ```
 
 How can your page, or RSS feed enter this database? Well...

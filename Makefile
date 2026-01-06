@@ -3,7 +3,7 @@ ARCHIVE_NAME = feeds.zip
 SOURCE_FILE = feeds.db
 
 # Declare phony targets
-.PHONY: zip unzip clean server pack-split unpack-split example-search
+.PHONY: zip zip-only unzip clean server pack-split unpack-split example-search0
 
 # Rule to create a zip archive split into 50MB parts
 zip: filter
@@ -14,6 +14,11 @@ zip: filter
 unzip:
 	[ -e $(SOURCE_FILE) ] && rm -r $(SOURCE_FILE) || true
 	7z x $(ARCHIVE_NAME)
+
+zip-only:
+	zip -s 50m $(ARCHIVE_NAME) $(SOURCE_FILE)
+	echo "Packed $(SOURCE_FILE) into $(ARCHIVE_NAME)"
+	rm -f $(SOURCE_FILE)
 
 pack-split:
 	zip $(ARCHIVE_NAME) $(SOURCE_FILE)
