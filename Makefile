@@ -6,10 +6,11 @@ SOURCE_FILE = feeds.db
 .PHONY: zip zip-only unzip clean server pack-split unpack-split example-search0
 
 # Rule to create a zip archive split into 50MB parts
-zip: filter
+zip:
 	zip -s 50m $(ARCHIVE_NAME) $(SOURCE_FILE)
 	echo "Packed $(SOURCE_FILE) into $(ARCHIVE_NAME)"
 	rm -f $(SOURCE_FILE)
+	rm tmp.db
 
 unzip:
 	[ -e $(SOURCE_FILE) ] && rm -r $(SOURCE_FILE) || true
@@ -34,6 +35,7 @@ unpack-split:
 
 filter:
 	poetry run python dbfeeds.py
+	rm tmp.db
 
 # Clean rule to remove the archive
 clean:

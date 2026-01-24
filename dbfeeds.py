@@ -5,7 +5,11 @@ from pathlib import Path
 from sqlalchemy import create_engine
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from linkarchivetools import Db2Feeds, DbFilter
+from linkarchivetools import (
+   Db2Feeds,
+   DbFilter,
+   DbMerge,
+)
 from linkarchivetools.utils.reflected import ReflectedEntryTable
 from webtoolkit import (
    OpmlPage,
@@ -218,10 +222,14 @@ def parse():
     parser.add_argument("--db", default="places.db", help="DB to be scanned")
     parser.add_argument("--output-db", default="feeds.db", help="DB to be produced")
     parser.add_argument("--remote-server", help="DB to be scanned")
+
     parser.add_argument("--convert", action="store_true", help="DB to be scanned")
     parser.add_argument("--add-lists", action="store_true", help="DB to be scanned")
     parser.add_argument("--update", action="store_true", help="DB to be scanned")
-    parser.add_argument("--merge", help="DB to be scanned")
+    parser.add_argument("--merge", action="store_true", help="DB to be scanned")
+
+    parser.add_argument("--merge-db", default="feeds_merge.db", help="DB to be scanned")
+    parser.add_argument("--old-feeds-db", default="feeds_old.db", help="old feeds DB")
 
     args = parser.parse_args()
 
@@ -229,6 +237,8 @@ def parse():
 
 
 def convert(args):
+    tmp_db = "tmp.db"
+
     print(f"Filtering {args.db} entries")
 
     filter = DbFilter(input_db = args.db, output_db = tmp_db)
@@ -268,7 +278,14 @@ def merge(args):
     convert(args)
     merge feeds.old.db + feeds.db -> output.db
     """
-    pass
+    input_db1 = args.old_feeds_db
+    input_db2 = args.merge_db
+    output_db = args.output_db
+
+    input_dbs = [input_db1, input_db2]
+
+    merge = DbMerge(input_dbs=input_dbs, output_db=output_db)
+    merge.convert()
 
 
 def update(args):
@@ -276,14 +293,11 @@ def update(args):
     Updates status_code of entries
     """
 
-
 def main():
     parser, args = parse()
     if not args.db:
         print("Please specify database")
         return
-
-    tmp_db = "tmp.db"
 
     if args.convert:
         convert(args)
