@@ -71,10 +71,25 @@ function fillListData() {
 
 function getPaginationText() {
     let page_num = parseInt(getQueryParam("page")) || 1;
-    let page_size = default_page_size;
-    let countElements = entries_length;
 
-    return GetPaginationNav(page_num, countElements/page_size, countElements);
+    if (initialization_mode == "json") {
+        let page_size = default_page_size;
+        let countElements = entries_length;
+
+        return GetPaginationNav(page_num, countElements/page_size, countElements);
+    }
+    else {
+        if (object_list_data == null) {
+            return "No data";
+        }
+        if (object_list_data.entries == null) {
+            return "No data";
+        }
+        if (object_list_data.entries.length == 0) {
+            return "No data";
+        }
+        return GetPaginationNavSimple(page_num);
+    }
 }
 
 

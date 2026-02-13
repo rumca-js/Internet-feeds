@@ -12,6 +12,7 @@ let debug_mode = false;
 
 let entries_direct_links = true;
 let highlight_bookmarks = false;
+let perform_auto_search = true;
 let click_behavior_modal_window = true;
 let sort_function = "-page_rating_votes"; // page_rating_votes, date_published
 let default_page_size = 200;

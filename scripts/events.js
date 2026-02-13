@@ -26,6 +26,9 @@ function workerFunction(e) {
                 object_list_data = result;
                 fillListData();
 
+                onSearchStop();
+                $('#pagination').html(getPaginationText());
+
                 object_list_data.entries.forEach(entry => {
                    if (isSocialMediaSupported(entry)) {
                       let query = selectEntrySocialStmt(entry.id);
@@ -42,13 +45,10 @@ function workerFunction(e) {
         }
         else if (message_type == "pagination") {
              let total_rows = result;
-
              entries_length = total_rows;
 
-             let nav_text = getPaginationText();
-
-             $('#pagination').html(nav_text);
              onSearchStop();
+             $('#pagination').html(getPaginationText());
         }
         else if (message_type == "socialdata") {
             debug(`Received social data len:${result.length}`);

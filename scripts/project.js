@@ -71,7 +71,7 @@ function performSearchJSON() {
 
        fillListData();
 
-       $('#pagination').html(GetPaginationNavSimple());
+       $('#pagination').html(getPaginationText());
 
        onSearchStop();
     }
@@ -91,8 +91,9 @@ function performSearchDb() {
     console.log("Sent entries message: " + query);
     worker.postMessage({ type:"entries", query:query });
 
-    console.log("Sent pagination message: " + query);
-    worker.postMessage({ type:"pagination", query:query });
+    // if we want to have precise message
+    //console.log("Sent pagination message: " + query);
+    //worker.postMessage({ type:"pagination", query:query });
 }
 
 
@@ -106,7 +107,7 @@ function performSearchAPI() {
     getEntriesJson(function(data) {
        object_list_data = data;
        fillListData();
-       $('#pagination').html(getPaginationSimpleText());
+       $('#pagination').html(getPaginationText());
        onSearchStop();
     }, page=page_num, search=userInput);
 }
@@ -243,20 +244,24 @@ async function Initialize() {
 
     if (getDefaultFileName()) {
       if (isWorkerNeeded(file_name)) {
+         initialization_mode = "database";
          await InitializeForDb();
          // onSystemReady is called when message about db being ready is received
       }
       else {
          await InitializeForJSON();
+         initialization_mode = "json";
          onSystemReady();
       }
+    }
+    else {
+       initialization_mode = "api";
+       onSystemReady();
     }
 }
 
 
 function onSystemReady() {
-    /* shared between JSON and DB */
-
     system_initialized = true;
     $('#searchInput').prop('disabled', false);
     $('#searchInput').focus();
@@ -264,10 +269,7 @@ function onSystemReady() {
     let search = getQueryParam("search");
     let entry_id = getQueryParam("entry_id");
 
-    if (entry_id) {
-       performSearch();
-    }
-    else if (search) {
+    if (entry_id || perform_auto_search) {
        performSearch();
     }
     else {

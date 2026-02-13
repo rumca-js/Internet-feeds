@@ -121,6 +121,9 @@ self.onmessage = async function (e) {
                 let object_list_data = { entries: [] };
                 object_list_data.entries = unpackEntries(result);
 
+                let entries_length = object_list_data.entries.length;
+                debug(`Worker - entries len ${entries_length}`);
+
                 debug("Worker - Sending entries respone");
 
                 // Send the result back to the main thread
