@@ -2,9 +2,10 @@
 
 This is a database of Internet feeds. Just unzip <b>feeds.zip</b>!
 
-The archive contains a SQLite database, generated from various curated link collections (e.g. the [https://github.com/rumca-js/Internet-Places-Database](https://github.com/rumca-js/Internet-Places-Database) project).
+The archive contains a SQLite database, generated from various curated link collections 
+ - (e.g. the https://github.com/rumca-js/Internet-Places-Database project)
 
-You can open the database with any SQLite tool.
+ You can open the database with any SQLite tool.
 
 # Data
 
@@ -17,6 +18,10 @@ How can your page, or RSS feed enter this database? Well...
  - first it needs to be on the internet. Available, scrapable (title and stuff needs to be there)
  - it needs to wait, until it is picked up by scrapers
  - only feeds with a great amount of attention and recognition are part of this database
+
+# Demo
+
+Demo is available at https://rumca-js.github.io/feeds
 
 ## Access via web interface
 
