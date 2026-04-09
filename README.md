@@ -21,7 +21,7 @@ How can your page, or RSS feed enter this database? Well...
 
 # Demo
 
-Demo is available at https://rumca-js.github.io/feeds
+Online Demo is available at https://rumca-js.github.io/feeds
 
 ## Access via web interface
 
