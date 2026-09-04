@@ -45,14 +45,14 @@ server:
 	python3 -m http.server 8000
 
 summary:
-	poetry run python dataanalyzer.py --summary --db $(SOURCE_FILE)
+	poetry run python dbanalyzer.py --tables --db $(SOURCE_FILE)
 
 example-search:
-	poetry run python ./dataanalyzer.py --db feeds.db --search "*Warhammer*" --tags --social --title --description --status
+	poetry run python ./dbanalyzer.py --db feeds.db --search "*Warhammer*" --tags --social --title --description --status
 
 search-youtube:
-	#poetry run python ./dataanalyzer.py --db feeds.db --search "*youtube.com/channel*" --title --tags --social
-	poetry run python ./dataanalyzer.py --db feeds.db --search "*videos.xml?channel*"
+	#poetry run python ./dbanalyzer.py --db feeds.db --search "*youtube.com/channel*" --title --tags --social
+	poetry run python ./dbanalyzer.py --db feeds.db --search "*videos.xml?channel*"
 
 download-data:
 	wget https://github.com/plenaryapp/awesome-rss-feeds/archive/refs/heads/master.zip
@@ -60,8 +60,10 @@ download-data:
 	rm master.zip
 
 merge:
-	wget https://github.com/rumca-js/awesome-database-top/raw/refs/head/main/internet.db.zip
+	wget https://github.com/rumca-js/awesome-database-top/raw/refs/heads/main/internet.db.zip
 	unzip internet.db.zip
+	rm internet.db.zip
+	mv feedsdb.db feeds.db #from backup
 	poetry run python dbfeeds.py --convert --db internet.db --output-db converted.db
 	poetry run python dbfeeds.py --merge --merge-db converted.db --old-feeds-db feeds.db --output-db feeds_new.db
 	rm feeds.db
