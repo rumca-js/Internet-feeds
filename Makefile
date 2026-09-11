@@ -64,8 +64,8 @@ merge:
 	unzip internet.db.zip
 	rm internet.db.zip
 	mv feedsdb.db feeds.db #from backup
-	poetry run python dbfeeds.py --convert --db internet.db --output-db converted.db
-	poetry run python dbfeeds.py --merge --merge-db converted.db --old-feeds-db feeds.db --output-db feeds_new.db
+	poetry run python db2feeds.py --db internet.db --output-db converted.db
+	poetry run python dbmerge.py --input-dbs converted.db,feeds.db --output-db feeds_new.db
 	rm feeds.db
 	mv feeds_new.db feeds.db
 	rm converted.db

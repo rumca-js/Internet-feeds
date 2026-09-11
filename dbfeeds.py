@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from linkarchivetools import (
    Db2Feeds,
-   DbFilter,
+   DbUpdate,
    DbMerge,
 )
 from linkarchivetools.utils.reflected import ReflectedEntryTable
@@ -241,8 +241,8 @@ def convert(args):
 
     print(f"Filtering {args.db} entries")
 
-    filter = DbFilter(input_db = args.db, output_db = tmp_db)
-    filter.filter_votes()
+    db_update = DbUpdate(input_db = args.db, output_db = tmp_db)
+    db_update.filter_votes()
 
     print(f"{args.db} places -> feeds")
 
