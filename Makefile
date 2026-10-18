@@ -33,8 +33,7 @@ unpack-split:
 	rm -f $(ARCHIVE_NAME)
 
 filter:
-	poetry run python dbfeeds.py
-	rm tmp.db
+	poetry run python dbupdate.py --db feeds.db --trunc-no-users --trunc-search-data --truncate-table domains --trunc-configuration --trunc-dynamic-data --obfuscate
 
 # Clean rule to remove the archive
 clean:
@@ -63,14 +62,14 @@ merge:
 	wget https://github.com/rumca-js/awesome-database-top/raw/refs/heads/main/internet.db.zip
 	unzip internet.db.zip
 	rm internet.db.zip
-	mv feedsdb.db feeds.db #from backup
+	#mv feedsdb.db feeds.db #from backup
 	poetry run python db2feeds.py --db internet.db --output-db converted.db
 	poetry run python dbmerge.py --input-dbs converted.db,feeds.db --output-db feeds_new.db
-	rm feeds.db
+	rm -f feeds.db
 	mv feeds_new.db feeds.db
-	rm converted.db
-	rm internet.db
-	rm tmp.db
+	rm -f converted.db
+	rm -f internet.db
+	rm -f tmp.db
 
 # adds from awesome lists, etc.
 # The lists fetch and add into table. Should we add 'jobs' only, though?

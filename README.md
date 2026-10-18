@@ -10,7 +10,7 @@ The archive contains a SQLite database, generated from various curated link coll
 # Data
 
 ```
-linkdatamodel, count: 56467
+linkdatamodel, count: 56872
 ```
 
 How can your page, or RSS feed enter this database? Well...
